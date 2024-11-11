@@ -21,13 +21,13 @@ namespace OnlineStore.Controllers
         public async Task<IActionResult> AddReview([FromBody] ReviewCreateDto reviewDto)
         {
             await _reviewCommandService.AddReviewAsync(reviewDto);
-            return StatusCode(201);
+            return StatusCode(201, reviewDto);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetReviewById(int id)
+        public async Task<IActionResult> GetReviewById(string id, int userId)
         {
-            var review = await _reviewQueryService.GetReviewByIdAsync(id);
+            var review = await _reviewQueryService.GetReviewByIdAsync(id, userId);
             return review != null ? Ok(review) : NotFound();
         }
 
@@ -35,13 +35,13 @@ namespace OnlineStore.Controllers
         public async Task<IActionResult> GetReviewsByProductId(int productId)
         {
             var reviews = await _reviewQueryService.GetReviewsByProductIdAsync(productId);
-            return Ok(reviews);
+            return reviews != null ? Ok(reviews) : NotFound();
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteReview(int id)
+        public async Task<IActionResult> DeleteReview(string id, int userId)
         {
-            await _reviewCommandService.DeleteReviewAsync(id);
+            await _reviewCommandService.DeleteReviewAsync(id, userId);
             return NoContent();
         }
     }

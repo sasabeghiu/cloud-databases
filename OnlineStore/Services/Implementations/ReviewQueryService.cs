@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Azure.Cosmos;
 using OnlineStore.DAL;
 using OnlineStore.DTO;
 using OnlineStore.Models;
@@ -8,37 +8,52 @@ namespace OnlineStore.Services.Implementations
 {
     public class ReviewQueryService : IReviewQueryService
     {
-        private readonly OnlineStoreContext _context;
+        private readonly CosmosDbContext _cosmosContext;
 
-        public ReviewQueryService(OnlineStoreContext context)
+        public ReviewQueryService(CosmosDbContext cosmosContext)
         {
-            _context = context;
+            _cosmosContext = cosmosContext;
         }
 
         public async Task<IEnumerable<ReviewDto>> GetReviewsByProductIdAsync(int productId)
         {
-            var reviews = await _context.Reviews
-                .Where(r => r.ProductId == productId)
-                .ToListAsync();
+            var queryDefinition = new QueryDefinition("SELECT * FROM c WHERE c.ProductId = @productId")
+                .WithParameter("@productId", productId);
 
-            return reviews.Select(review => new ReviewDto
+            var queryRequestOptions = new QueryRequestOptions
             {
-                ReviewId = review.ReviewId,
-                UserId = review.UserId,
-                ProductId = review.ProductId,
-                Content = review.Content,
-                Rating = review.Rating,
-                ReviewDate = review.ReviewDate
-            });
+
+            };
+
+            var queryIterator = _cosmosContext.ReviewsContainer.GetItemQueryIterator<Review>(queryDefinition, requestOptions: queryRequestOptions);
+
+            var reviews = new List<ReviewDto>();
+
+            while (queryIterator.HasMoreResults)
+            {
+                var response = await queryIterator.ReadNextAsync();
+                reviews.AddRange(response.Select(review => new ReviewDto
+                {
+                    ReviewId = review.id,
+                    UserId = review.UserId,
+                    ProductId = review.ProductId,
+                    Content = review.Content,
+                    Rating = review.Rating,
+                    ReviewDate = review.ReviewDate
+                }));
+            }
+
+            return reviews;
         }
 
-        public async Task<ReviewDto> GetReviewByIdAsync(int reviewId)
+        public async Task<ReviewDto> GetReviewByIdAsync(string reviewId, int userId)
         {
-            var review = await _context.Reviews.FindAsync(reviewId) ?? throw new KeyNotFoundException($"Review with ID {reviewId} not found.");
+            var response = await _cosmosContext.ReviewsContainer.ReadItemAsync<Review>(reviewId, new PartitionKey(userId));
+            var review = response.Resource;
 
             return new ReviewDto
             {
-                ReviewId = review.ReviewId,
+                ReviewId = review.id,
                 UserId = review.UserId,
                 ProductId = review.ProductId,
                 Content = review.Content,

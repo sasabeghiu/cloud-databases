@@ -1,3 +1,4 @@
+using Microsoft.Azure.Cosmos;
 using OnlineStore.DAL;
 using OnlineStore.DTO;
 using OnlineStore.Models;
@@ -7,17 +8,18 @@ namespace OnlineStore.Services.Implementations
 {
     public class ReviewCommandService : IReviewCommandService
     {
-        private readonly OnlineStoreContext _context;
+        private readonly CosmosDbContext _cosmosContext;
 
-        public ReviewCommandService(OnlineStoreContext context)
+        public ReviewCommandService(CosmosDbContext cosmosContext)
         {
-            _context = context;
+            _cosmosContext = cosmosContext;
         }
 
         public async Task AddReviewAsync(ReviewCreateDto reviewDto)
         {
             var review = new Review
             {
+                id = Guid.NewGuid().ToString(),
                 UserId = reviewDto.UserId,
                 ProductId = reviewDto.ProductId,
                 Content = reviewDto.Content,
@@ -25,18 +27,13 @@ namespace OnlineStore.Services.Implementations
                 ReviewDate = DateTime.UtcNow
             };
 
-            _context.Reviews.Add(review);
-            await _context.SaveChangesAsync();
+            await _cosmosContext.ReviewsContainer.CreateItemAsync(review);
         }
 
-        public async Task DeleteReviewAsync(int reviewId)
+        public async Task DeleteReviewAsync(string reviewId, int userId)
         {
-            var review = await _context.Reviews.FindAsync(reviewId);
-            if (review != null)
-            {
-                _context.Reviews.Remove(review);
-                await _context.SaveChangesAsync();
-            }
+            await _cosmosContext.ReviewsContainer.DeleteItemAsync<Review>(reviewId, new PartitionKey(userId));
         }
+
     }
 }

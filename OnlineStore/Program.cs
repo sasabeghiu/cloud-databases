@@ -17,25 +17,37 @@ builder.Services.AddDbContext<OnlineStoreContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
-// Register CosmosClient for Cosmos DB
+// Register Cosmos Client and CosmosDbContext for Orders and Reviews in Cosmos DB
 builder.Services.AddSingleton(s =>
 {
     var config = s.GetRequiredService<IConfiguration>();
+
+    var httpClientHandler = new HttpClientHandler
+    {
+        ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+    };
+
     var clientOptions = new CosmosClientOptions
     {
         ConnectionMode = ConnectionMode.Gateway,
+        HttpClientFactory = () => new HttpClient(httpClientHandler),
         LimitToEndpoint = true,
         EnableTcpConnectionEndpointRediscovery = false
     };
     return new CosmosClient(config["CosmosDb:AccountEndpoint"], config["CosmosDb:AccountKey"], clientOptions);
 });
 
-// Register CosmosDbService with ICosmosDbService
-builder.Services.AddSingleton<ICosmosDbService>(s =>
+// Register CosmosDbContext with Cosmos Containers for Orders and Reviews
+builder.Services.AddSingleton(s =>
 {
-    var client = s.GetRequiredService<CosmosClient>();
     var config = s.GetRequiredService<IConfiguration>();
-    return new CosmosDbService(client, config["CosmosDb:DatabaseName"]);
+    var client = s.GetRequiredService<CosmosClient>();
+
+    return new CosmosDbContext(client,
+        config["CosmosDb:DatabaseName"],
+        config["CosmosDb:OrdersContainerName"],
+        config["CosmosDb:ReviewsContainerName"]
+    );
 });
 
 // Register Services for DI

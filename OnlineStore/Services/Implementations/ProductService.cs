@@ -18,7 +18,7 @@ namespace OnlineStore.Services.Implementations
         public async Task<ProductDto> GetProductByIdAsync(int productId)
         {
             var product = await _context.Products
-                .Include(p => p.Reviews)
+                // .Include(p => p.Reviews)
                 .FirstOrDefaultAsync(p => p.ProductId == productId) ?? throw new KeyNotFoundException($"Product with ID {productId} not found.");
 
             return new ProductDto
