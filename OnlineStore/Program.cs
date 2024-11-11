@@ -50,6 +50,15 @@ builder.Services.AddSingleton(s =>
     );
 });
 
+// Register BlobStorageService
+builder.Services.AddSingleton(s =>
+{
+    var config = s.GetRequiredService<IConfiguration>();
+    var connectionString = config["AzureStorage:ConnectionString"];
+    var containerName = config["AzureStorage:ContainerName"];
+    return new BlobStorageService(connectionString, containerName);
+});
+
 // Register Services for DI
 builder.Services.AddScoped<IOrderCommandService, OrderCommandService>();
 builder.Services.AddScoped<IOrderQueryService, OrderQueryService>();

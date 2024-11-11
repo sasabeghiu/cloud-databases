@@ -18,9 +18,31 @@ namespace OnlineStore.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateProduct([FromBody] ProductCreateDto productDto)
         {
-            await _productService.CreateProductAsync(productDto);
+            if (productDto == null)
+            {
+                return BadRequest("Product details are required.");
+            }
+
+            Stream? imageStream = null;
+
+            try
+            {
+                if (!string.IsNullOrEmpty(productDto.ImageUrl))
+                {
+                    using var httpClient = new HttpClient();
+                    var imageBytes = await httpClient.GetByteArrayAsync(productDto.ImageUrl);
+                    imageStream = new MemoryStream(imageBytes);
+                }
+            }
+            catch (HttpRequestException)
+            {
+                return BadRequest("Failed to download the image from the provided URL.");
+            }
+
+            await _productService.CreateProductAsync(productDto, imageStream ?? Stream.Null);
             return StatusCode(201);
         }
+
 
         [HttpGet]
         public async Task<IActionResult> GetAllProducts()

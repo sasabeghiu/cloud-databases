@@ -12,15 +12,14 @@ namespace OnlineStore.Services.Implementations
         public CosmosDbService(CosmosClient client, string databaseName)
         {
             _client = client;
-            _databaseName = databaseName;   
+            _databaseName = databaseName;
         }
 
-        // Helper method to get the specified container
         private async Task<Container> GetContainerAsync(string containerName)
         {
             var database = await _client.CreateDatabaseIfNotExistsAsync(_databaseName);
             var containerResponse = await database.Database.CreateContainerIfNotExistsAsync(containerName, "/UserId");
-            return containerResponse.Container; 
+            return containerResponse.Container;
         }
 
         public async Task AddItemAsync<T>(T item, string partitionKey, string containerName)
@@ -66,7 +65,6 @@ namespace OnlineStore.Services.Implementations
                 throw;
             }
         }
-
 
         public async Task<IEnumerable<T>> GetItemsAsync<T>(string query, string partitionKey, string containerName)
         {

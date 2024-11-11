@@ -7,7 +7,7 @@ namespace OnlineStore.Services.Interfaces
         Task<ProductDto> GetProductByIdAsync(int productId);
         Task<IEnumerable<ProductDto>> GetAllProductsAsync();
         Task UpdateProductStockAsync(int productId, int quantity);
-        Task CreateProductAsync(ProductCreateDto productDto);
+        Task CreateProductAsync(ProductCreateDto productDto, Stream imageStream);
         Task DeleteProductAsync(int productId);
     }
 }

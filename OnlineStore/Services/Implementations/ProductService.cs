@@ -9,10 +9,12 @@ namespace OnlineStore.Services.Implementations
     public class ProductService : IProductService
     {
         private readonly OnlineStoreContext _context;
+        private readonly BlobStorageService _blobStorageService;
 
-        public ProductService(OnlineStoreContext context)
+        public ProductService(OnlineStoreContext context, BlobStorageService blobStorageService)
         {
             _context = context;
+            _blobStorageService = blobStorageService;
         }
 
         public async Task<ProductDto> GetProductByIdAsync(int productId)
@@ -41,7 +43,7 @@ namespace OnlineStore.Services.Implementations
                 ProductId = product.ProductId,
                 Name = product.Name,
                 Description = product.Description,
-                Image = product.Image,
+                Image = product.Image + "?sv=2018-03-28&st=2024-11-11T18%3A44%3A18Z&se=2024-11-12T18%3A44%3A18Z&sr=c&sp=rl&sig=%2FwNGlXDaIcwjjQgIpN4dm%2BxlqH6sFOhMkxFX8LF4xqU%3D",
                 Price = product.Price,
                 Stock = product.Stock
             });
@@ -57,13 +59,21 @@ namespace OnlineStore.Services.Implementations
             }
         }
 
-        public async Task CreateProductAsync(ProductCreateDto productDto)
+        public async Task CreateProductAsync(ProductCreateDto productDto, Stream imageStream)
         {
+            string? imageUrl = null;
+
+            if (imageStream != null)
+            {
+                // Upload the image to blob storage and get the URL
+                imageUrl = await _blobStorageService.UploadImageAsync(imageStream, $"{productDto.Name}_{DateTime.UtcNow}.jpg");
+            }
+
             var product = new Product
             {
                 Name = productDto.Name,
                 Description = productDto.Description,
-                Image = productDto.Image,
+                Image = imageUrl,
                 Price = productDto.Price,
                 Stock = productDto.Stock
             };
@@ -77,6 +87,12 @@ namespace OnlineStore.Services.Implementations
             var product = await _context.Products.FindAsync(productId);
             if (product != null)
             {
+                if (!string.IsNullOrEmpty(product.Image))
+                {
+                    var fileName = Path.GetFileName(new Uri(product.Image).LocalPath);
+                    await _blobStorageService.DeleteImageAsync(fileName);
+                }
+
                 _context.Products.Remove(product);
                 await _context.SaveChangesAsync();
             }
