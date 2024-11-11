@@ -1,0 +1,52 @@
+# Ignore build outputs and transient files for .NET
+bin/
+obj/
+*.exe
+*.dll
+*.pdb
+*.db
+*.mdb
+*.log
+
+# Ignore configuration and environment files
+appsettings*.json
+appsettings*.Development.json
+.env
+
+# Ignore local development IDE settings
+.vscode/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Ignore JetBrains Rider and other IDEs
+.idea/
+*.sln.iml
+
+# Ignore other generated files and system-specific files
+*.pyc
+*.class
+.DS_Store
+Thumbs.db
+*.lock.json
+.vscode/settings.json
+
+# Ignore npm files if using Node.js for frontend
+node_modules/
+package-lock.json
+yarn.lock
+
+# Ignore additional temporary files
+*.bak
+*.tmp
+~$*
+
+# Ignore Azurite storage directories and files
+__blobstorage__/
+__queuestorage__/
+__azurite_db_blob__.json
+__azurite_db_blob_extent__.json
+__azurite_db_queue__.json
+__azurite_db_queue_extent__.json
+__azurite_db_table__.json
