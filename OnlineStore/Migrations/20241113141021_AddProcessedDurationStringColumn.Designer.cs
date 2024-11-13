@@ -12,8 +12,8 @@ using OnlineStore.DAL;
 namespace OnlineStore.Migrations
 {
     [DbContext(typeof(OnlineStoreContext))]
-    [Migration("20241108130942_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20241113141021_AddProcessedDurationStringColumn")]
+    partial class AddProcessedDurationStringColumn
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -35,8 +35,8 @@ namespace OnlineStore.Migrations
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<TimeSpan?>("ProcessedDuration")
-                        .HasColumnType("time");
+                    b.Property<string>("ProcessedDuration")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("ShippingDate")
                         .HasColumnType("datetime2");
@@ -116,11 +116,8 @@ namespace OnlineStore.Migrations
 
             modelBuilder.Entity("OnlineStore.Models.Review", b =>
                 {
-                    b.Property<int>("ReviewId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReviewId"), 1L, 1);
+                    b.Property<string>("id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Content")
                         .IsRequired()
@@ -139,13 +136,13 @@ namespace OnlineStore.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.HasKey("ReviewId");
+                    b.HasKey("id");
 
                     b.HasIndex("ProductId");
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Reviews");
+                    b.ToTable("Review");
                 });
 
             modelBuilder.Entity("OnlineStore.Models.User", b =>

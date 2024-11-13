@@ -17,10 +17,12 @@ namespace OnlineStore.Services.Implementations
 
         public async Task<OrderDto> GetOrderByIdAsync(int orderId)
         {
-            var order = await _context.Orders
-                .Include(o => o.OrderItems)
-                .ThenInclude(oi => oi.Product)
-                .FirstOrDefaultAsync(o => o.OrderId == orderId) ?? throw new KeyNotFoundException($"Order with ID {orderId} not found.");
+            var order =
+                await _context
+                    .Orders.Include(o => o.OrderItems)
+                    .ThenInclude(oi => oi.Product)
+                    .FirstOrDefaultAsync(o => o.OrderId == orderId)
+                ?? throw new KeyNotFoundException($"Order with ID {orderId} not found.");
 
             return new OrderDto
             {
@@ -29,19 +31,21 @@ namespace OnlineStore.Services.Implementations
                 OrderDate = order.OrderDate,
                 ShippingDate = order.ShippingDate,
                 Status = order.Status.ToString(),
-                OrderItems = order.OrderItems.Select(oi => new OrderItemDto
-                {
-                    ProductId = oi.ProductId,
-                    Quantity = oi.Quantity,
-                    Price = oi.Price
-                }).ToList()
+                OrderItems = order
+                    .OrderItems.Select(oi => new OrderItemDto
+                    {
+                        ProductId = oi.ProductId,
+                        Quantity = oi.Quantity,
+                        Price = oi.Price,
+                    })
+                    .ToList(),
             };
         }
 
         public async Task<IEnumerable<OrderDto>> GetOrdersByUserIdAsync(int userId)
         {
-            var orders = await _context.Orders
-                .Where(o => o.UserId == userId)
+            var orders = await _context
+                .Orders.Where(o => o.UserId == userId)
                 .Include(o => o.OrderItems)
                 .ThenInclude(oi => oi.Product)
                 .ToListAsync();
@@ -53,22 +57,24 @@ namespace OnlineStore.Services.Implementations
                 OrderDate = order.OrderDate,
                 ShippingDate = order.ShippingDate,
                 Status = order.Status.ToString(),
-                OrderItems = order.OrderItems.Select(oi => new OrderItemDto
-                {
-                    ProductId = oi.ProductId,
-                    Quantity = oi.Quantity,
-                    Price = oi.Price
-                }).ToList()
+                OrderItems = order
+                    .OrderItems.Select(oi => new OrderItemDto
+                    {
+                        ProductId = oi.ProductId,
+                        Quantity = oi.Quantity,
+                        Price = oi.Price,
+                    })
+                    .ToList(),
             });
         }
 
         public async Task<IEnumerable<OrderDto>> GetOrdersByStatusAsync(OrderStatus status)
         {
-            var orders = await _context.Orders
-               .Where(o => o.Status == status)
-               .Include(o => o.OrderItems)
-               .ThenInclude(oi => oi.Product)
-               .ToListAsync();
+            var orders = await _context
+                .Orders.Where(o => o.Status == status)
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Product)
+                .ToListAsync();
 
             return orders.Select(order => new OrderDto
             {
@@ -77,19 +83,21 @@ namespace OnlineStore.Services.Implementations
                 OrderDate = order.OrderDate,
                 ShippingDate = order.ShippingDate,
                 Status = order.Status.ToString(),
-                OrderItems = order.OrderItems.Select(oi => new OrderItemDto
-                {
-                    ProductId = oi.ProductId,
-                    Quantity = oi.Quantity,
-                    Price = oi.Price
-                }).ToList()
+                OrderItems = order
+                    .OrderItems.Select(oi => new OrderItemDto
+                    {
+                        ProductId = oi.ProductId,
+                        Quantity = oi.Quantity,
+                        Price = oi.Price,
+                    })
+                    .ToList(),
             });
         }
 
         public async Task<IEnumerable<OrderDto>> GetAllOrdersAsync(int pageNumber, int pageSize)
         {
-            var orders = await _context.Orders
-                .Include(o => o.OrderItems)
+            var orders = await _context
+                .Orders.Include(o => o.OrderItems)
                 .ThenInclude(oi => oi.Product)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
@@ -102,12 +110,39 @@ namespace OnlineStore.Services.Implementations
                 OrderDate = order.OrderDate,
                 ShippingDate = order.ShippingDate,
                 Status = order.Status.ToString(),
-                OrderItems = order.OrderItems.Select(oi => new OrderItemDto
-                {
-                    ProductId = oi.ProductId,
-                    Quantity = oi.Quantity,
-                    Price = oi.Price
-                }).ToList()
+                OrderItems = order
+                    .OrderItems.Select(oi => new OrderItemDto
+                    {
+                        ProductId = oi.ProductId,
+                        Quantity = oi.Quantity,
+                        Price = oi.Price,
+                    })
+                    .ToList(),
+            });
+        }
+
+        public async Task<IEnumerable<OrderDto>> GetPendingOrdersAsync()
+        {
+            var orders = await _context
+                .Orders.Where(o => o.ProcessedDuration == null) //  && o.Status != OrderStatus.Canceled
+                .ToListAsync();
+
+            return orders.Select(order => new OrderDto
+            {
+                OrderId = order.OrderId,
+                UserId = order.UserId,
+                OrderDate = order.OrderDate,
+                ShippingDate = order.ShippingDate,
+                Status = order.Status.ToString(),
+                ProcessedDuration = order.ProcessedDuration,
+                OrderItems = order
+                    .OrderItems.Select(oi => new OrderItemDto
+                    {
+                        ProductId = oi.ProductId,
+                        Quantity = oi.Quantity,
+                        Price = oi.Price,
+                    })
+                    .ToList(),
             });
         }
     }

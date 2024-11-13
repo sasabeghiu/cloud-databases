@@ -9,5 +9,6 @@ namespace OnlineStore.Services.Interfaces
         Task<IEnumerable<OrderDto>> GetOrdersByUserIdAsync(int userId);
         Task<IEnumerable<OrderDto>> GetOrdersByStatusAsync(OrderStatus status);
         Task<IEnumerable<OrderDto>> GetAllOrdersAsync(int pageNumber, int pageSize);
+        Task<IEnumerable<OrderDto>> GetPendingOrdersAsync();
     }
 }

@@ -27,12 +27,15 @@ namespace OnlineStore.Services.Implementations
                 UserId = orderDto.UserId,
                 OrderDate = DateTime.UtcNow,
                 Status = OrderStatus.Ordered,
-                OrderItems = orderDto.OrderItems?.Select(itemDto => new OrderItem
-                {
-                    ProductId = itemDto.ProductId,
-                    Quantity = itemDto.Quantity,
-                    Price = itemDto.Price
-                }).ToList() ?? new List<OrderItem>()
+                OrderItems =
+                    orderDto
+                        .OrderItems?.Select(itemDto => new OrderItem
+                        {
+                            ProductId = itemDto.ProductId,
+                            Quantity = itemDto.Quantity,
+                            Price = itemDto.Price,
+                        })
+                        .ToList() ?? new List<OrderItem>(),
             };
 
             _context.Orders.Add(order);
@@ -60,10 +63,23 @@ namespace OnlineStore.Services.Implementations
             }
         }
 
+        public async Task UpdateOrderProcessedDurationAsync(int orderId, string processedDuration)
+        {
+            var order = await _context.Orders.FindAsync(orderId);
+
+            if (order == null)
+            {
+                throw new ArgumentNullException(nameof(order));
+            }
+
+            order.ProcessedDuration = processedDuration.ToString();
+            await _context.SaveChangesAsync();
+        }
+
         public async Task DeleteOrderAsync(int orderId)
         {
-            var order = await _context.Orders
-                .Include(o => o.OrderItems)
+            var order = await _context
+                .Orders.Include(o => o.OrderItems)
                 .FirstOrDefaultAsync(o => o.OrderId == orderId);
 
             if (order != null)

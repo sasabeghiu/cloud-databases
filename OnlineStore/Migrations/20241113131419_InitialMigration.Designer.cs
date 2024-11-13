@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OnlineStore.DAL;
 
@@ -11,9 +12,10 @@ using OnlineStore.DAL;
 namespace OnlineStore.Migrations
 {
     [DbContext(typeof(OnlineStoreContext))]
-    partial class OnlineStoreContextModelSnapshot : ModelSnapshot
+    [Migration("20241113131419_InitialMigration")]
+    partial class InitialMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -33,8 +35,8 @@ namespace OnlineStore.Migrations
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("ProcessedDuration")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime?>("ProcessedDuration")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("ShippingDate")
                         .HasColumnType("datetime2");

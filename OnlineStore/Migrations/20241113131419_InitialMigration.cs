@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace OnlineStore.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class InitialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -53,7 +53,7 @@ namespace OnlineStore.Migrations
                     OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ShippingDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Status = table.Column<int>(type: "int", nullable: false),
-                    ProcessedDuration = table.Column<TimeSpan>(type: "time", nullable: true)
+                    ProcessedDuration = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -67,11 +67,10 @@ namespace OnlineStore.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Reviews",
+                name: "Review",
                 columns: table => new
                 {
-                    ReviewId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false),
                     ProductId = table.Column<int>(type: "int", nullable: false),
                     Content = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
@@ -80,15 +79,15 @@ namespace OnlineStore.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Reviews", x => x.ReviewId);
+                    table.PrimaryKey("PK_Review", x => x.id);
                     table.ForeignKey(
-                        name: "FK_Reviews_Products_ProductId",
+                        name: "FK_Review_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "ProductId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Reviews_Users_UserId",
+                        name: "FK_Review_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId",
@@ -139,13 +138,13 @@ namespace OnlineStore.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reviews_ProductId",
-                table: "Reviews",
+                name: "IX_Review_ProductId",
+                table: "Review",
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reviews_UserId",
-                table: "Reviews",
+                name: "IX_Review_UserId",
+                table: "Review",
                 column: "UserId");
         }
 
@@ -155,7 +154,7 @@ namespace OnlineStore.Migrations
                 name: "OrderItems");
 
             migrationBuilder.DropTable(
-                name: "Reviews");
+                name: "Review");
 
             migrationBuilder.DropTable(
                 name: "Orders");

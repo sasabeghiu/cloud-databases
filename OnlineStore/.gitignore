@@ -9,8 +9,8 @@ obj/
 *.log
 
 # Ignore configuration and environment files
-appsettings*.json
-appsettings*.Development.json
+# appsettings*.json
+# appsettings*.Development.json
 .env
 
 # Ignore local development IDE settings
@@ -46,3 +46,6 @@ yarn.lock
 __blobstorage__
 __queuestorage__
 __azurite_db_*
+
+.vscode/
+.config/
