@@ -24,7 +24,7 @@ namespace OnlineStore.Services.Implementations
                 ProductId = reviewDto.ProductId,
                 Content = reviewDto.Content,
                 Rating = reviewDto.Rating,
-                ReviewDate = DateTime.UtcNow
+                ReviewDate = DateTime.UtcNow,
             };
 
             await _cosmosContext.ReviewsContainer.CreateItemAsync(review);
@@ -32,8 +32,10 @@ namespace OnlineStore.Services.Implementations
 
         public async Task DeleteReviewAsync(string reviewId, int userId)
         {
-            await _cosmosContext.ReviewsContainer.DeleteItemAsync<Review>(reviewId, new PartitionKey(userId));
+            await _cosmosContext.ReviewsContainer.DeleteItemAsync<Review>(
+                reviewId,
+                new PartitionKey(userId)
+            );
         }
-
     }
 }

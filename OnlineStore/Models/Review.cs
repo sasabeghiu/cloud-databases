@@ -10,11 +10,13 @@ namespace OnlineStore.Models
         [Required]
         [JsonProperty("UserId")]
         public int UserId { get; set; }
+
         [JsonIgnore]
         public User? User { get; set; }
 
         [Required]
         public int ProductId { get; set; }
+
         [JsonIgnore]
         public Product? Product { get; set; }
 

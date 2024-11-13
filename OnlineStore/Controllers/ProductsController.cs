@@ -43,7 +43,6 @@ namespace OnlineStore.Controllers
             return StatusCode(201);
         }
 
-
         [HttpGet]
         public async Task<IActionResult> GetAllProducts()
         {

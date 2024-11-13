@@ -18,7 +18,10 @@ namespace OnlineStore.Services.Implementations
         private async Task<Container> GetContainerAsync(string containerName)
         {
             var database = await _client.CreateDatabaseIfNotExistsAsync(_databaseName);
-            var containerResponse = await database.Database.CreateContainerIfNotExistsAsync(containerName, "/UserId");
+            var containerResponse = await database.Database.CreateContainerIfNotExistsAsync(
+                containerName,
+                "/UserId"
+            );
             return containerResponse.Container;
         }
 
@@ -26,10 +29,16 @@ namespace OnlineStore.Services.Implementations
         {
             var container = await GetContainerAsync(containerName);
 
-            using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+            using var cancellationTokenSource = new CancellationTokenSource(
+                TimeSpan.FromSeconds(10)
+            );
             try
             {
-                await container.CreateItemAsync(item, new PartitionKey(partitionKey), cancellationToken: cancellationTokenSource.Token);
+                await container.CreateItemAsync(
+                    item,
+                    new PartitionKey(partitionKey),
+                    cancellationToken: cancellationTokenSource.Token
+                );
                 Console.WriteLine("Item added to Cosmos DB.");
             }
             catch (CosmosException ex)
@@ -42,11 +51,12 @@ namespace OnlineStore.Services.Implementations
             }
         }
 
-
         public async Task<T?> GetItemAsync<T>(string id, string partitionKey, string containerName)
         {
             var container = await GetContainerAsync(containerName);
-            Console.WriteLine($"Attempting to retrieve item with ID: {id} and Partition Key: {partitionKey} in Container: {containerName}");
+            Console.WriteLine(
+                $"Attempting to retrieve item with ID: {id} and Partition Key: {partitionKey} in Container: {containerName}"
+            );
 
             try
             {
@@ -66,15 +76,22 @@ namespace OnlineStore.Services.Implementations
             }
         }
 
-        public async Task<IEnumerable<T>> GetItemsAsync<T>(string query, string partitionKey, string containerName)
+        public async Task<IEnumerable<T>> GetItemsAsync<T>(
+            string query,
+            string partitionKey,
+            string containerName
+        )
         {
             var container = await GetContainerAsync(containerName);
             var queryDefinition = new QueryDefinition(query);
             var queryRequestOptions = new QueryRequestOptions
             {
-                PartitionKey = new PartitionKey(partitionKey)
+                PartitionKey = new PartitionKey(partitionKey),
             };
-            var queryResultSetIterator = container.GetItemQueryIterator<T>(queryDefinition, requestOptions: queryRequestOptions);
+            var queryResultSetIterator = container.GetItemQueryIterator<T>(
+                queryDefinition,
+                requestOptions: queryRequestOptions
+            );
 
             List<T> results = new List<T>();
 
@@ -98,7 +115,12 @@ namespace OnlineStore.Services.Implementations
             return results;
         }
 
-        public async Task UpdateItemAsync<T>(string id, T item, string partitionKey, string containerName)
+        public async Task UpdateItemAsync<T>(
+            string id,
+            T item,
+            string partitionKey,
+            string containerName
+        )
         {
             var container = await GetContainerAsync(containerName);
             await container.UpsertItemAsync(item, new PartitionKey(partitionKey));

@@ -19,8 +19,9 @@ namespace OnlineStore.Services.Implementations
 
         public async Task<ProductDto> GetProductByIdAsync(int productId)
         {
-            var product = await _context.Products
-                .FirstOrDefaultAsync(p => p.ProductId == productId) ?? throw new KeyNotFoundException($"Product with ID {productId} not found.");
+            var product =
+                await _context.Products.FirstOrDefaultAsync(p => p.ProductId == productId)
+                ?? throw new KeyNotFoundException($"Product with ID {productId} not found.");
 
             return new ProductDto
             {
@@ -29,7 +30,7 @@ namespace OnlineStore.Services.Implementations
                 Description = product.Description,
                 Image = product.Image,
                 Price = product.Price,
-                Stock = product.Stock
+                Stock = product.Stock,
             };
         }
 
@@ -42,9 +43,11 @@ namespace OnlineStore.Services.Implementations
                 ProductId = product.ProductId,
                 Name = product.Name,
                 Description = product.Description,
-                Image = product.Image + "?sv=2018-03-28&st=2024-11-11T18%3A44%3A18Z&se=2024-11-12T18%3A44%3A18Z&sr=c&sp=rl&sig=%2FwNGlXDaIcwjjQgIpN4dm%2BxlqH6sFOhMkxFX8LF4xqU%3D",
+                Image =
+                    product.Image
+                    + "?sv=2018-03-28&st=2024-11-11T18%3A44%3A18Z&se=2024-11-12T18%3A44%3A18Z&sr=c&sp=rl&sig=%2FwNGlXDaIcwjjQgIpN4dm%2BxlqH6sFOhMkxFX8LF4xqU%3D",
                 Price = product.Price,
-                Stock = product.Stock
+                Stock = product.Stock,
             });
         }
 
@@ -64,8 +67,10 @@ namespace OnlineStore.Services.Implementations
 
             if (imageStream != null)
             {
-                // Upload the image to blob storage and get the URL
-                imageUrl = await _blobStorageService.UploadImageAsync(imageStream, $"{productDto.Name}_{DateTime.UtcNow}.jpg");
+                imageUrl = await _blobStorageService.UploadImageAsync(
+                    imageStream,
+                    $"{productDto.Name}_{DateTime.UtcNow}.jpg"
+                );
             }
 
             var product = new Product
@@ -74,7 +79,7 @@ namespace OnlineStore.Services.Implementations
                 Description = productDto.Description,
                 Image = imageUrl,
                 Price = productDto.Price,
-                Stock = productDto.Stock
+                Stock = productDto.Stock,
             };
 
             _context.Products.Add(product);

@@ -31,6 +31,8 @@ namespace OnlineStore.Services.Implementations
                 OrderDate = order.OrderDate,
                 ShippingDate = order.ShippingDate,
                 Status = order.Status.ToString(),
+                ProcessedDuration = order.ProcessedDuration,
+                TotalPrice = order.TotalPrice,
                 OrderItems = order
                     .OrderItems.Select(oi => new OrderItemDto
                     {
@@ -56,6 +58,8 @@ namespace OnlineStore.Services.Implementations
                 OrderDate = order.OrderDate,
                 ShippingDate = order.ShippingDate,
                 Status = order.Status.ToString(),
+                ProcessedDuration = order.ProcessedDuration,
+                TotalPrice = order.TotalPrice,
                 OrderItems = order
                     .OrderItems.Select(oi => new OrderItemDto
                     {
@@ -81,6 +85,8 @@ namespace OnlineStore.Services.Implementations
                 OrderDate = order.OrderDate,
                 ShippingDate = order.ShippingDate,
                 Status = order.Status.ToString(),
+                ProcessedDuration = order.ProcessedDuration,
+                TotalPrice = order.TotalPrice,
                 OrderItems = order
                     .OrderItems.Select(oi => new OrderItemDto
                     {
@@ -96,6 +102,7 @@ namespace OnlineStore.Services.Implementations
             var orders = await _context
                 .Orders.Include(o => o.OrderItems)
                 .ThenInclude(oi => oi.Product)
+                .OrderBy(o => o.OrderDate)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
@@ -107,6 +114,8 @@ namespace OnlineStore.Services.Implementations
                 OrderDate = order.OrderDate,
                 ShippingDate = order.ShippingDate,
                 Status = order.Status.ToString(),
+                ProcessedDuration = order.ProcessedDuration,
+                TotalPrice = order.TotalPrice,
                 OrderItems = order
                     .OrderItems.Select(oi => new OrderItemDto
                     {
@@ -120,7 +129,7 @@ namespace OnlineStore.Services.Implementations
         public async Task<IEnumerable<OrderDto>> GetPendingOrdersAsync()
         {
             var orders = await _context
-                .Orders.Where(o => o.ProcessedDuration == null) //  && o.Status != OrderStatus.Canceled
+                .Orders.Where(o => o.ProcessedDuration == null && o.Status != OrderStatus.Canceled)
                 .ToListAsync();
 
             return orders.Select(order => new OrderDto
@@ -131,6 +140,7 @@ namespace OnlineStore.Services.Implementations
                 ShippingDate = order.ShippingDate,
                 Status = order.Status.ToString(),
                 ProcessedDuration = order.ProcessedDuration,
+                TotalPrice = order.TotalPrice,
                 OrderItems = order
                     .OrderItems.Select(oi => new OrderItemDto
                     {

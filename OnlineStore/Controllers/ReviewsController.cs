@@ -11,7 +11,10 @@ namespace OnlineStore.Controllers
         private readonly IReviewCommandService _reviewCommandService;
         private readonly IReviewQueryService _reviewQueryService;
 
-        public ReviewsController(IReviewCommandService reviewCommandService, IReviewQueryService reviewQueryService)
+        public ReviewsController(
+            IReviewCommandService reviewCommandService,
+            IReviewQueryService reviewQueryService
+        )
         {
             _reviewCommandService = reviewCommandService;
             _reviewQueryService = reviewQueryService;

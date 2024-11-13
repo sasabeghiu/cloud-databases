@@ -52,6 +52,12 @@ namespace OnlineStore.DAL
                 .Property(oi => oi.Price)
                 .HasColumnType("decimal(18,2)");
 
+            modelBuilder
+                .Entity<Order>()
+                .Property(o => o.TotalPrice)
+                .HasColumnType("decimal(18,2)")
+                .HasDefaultValue(0);
+
             modelBuilder.Entity<Product>().Property(p => p.Price).HasColumnType("decimal(18,2)");
         }
     }

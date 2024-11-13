@@ -9,7 +9,7 @@ namespace OnlineStore.DTO
         public string? Description { get; set; }
         public decimal Price { get; set; }
         public int Stock { get; set; }
-        public string? ImageUrl { get; set; } 
+        public string? ImageUrl { get; set; }
     }
 
     public class ProductDto
@@ -21,5 +21,4 @@ namespace OnlineStore.DTO
         public decimal Price { get; set; }
         public int Stock { get; set; }
     }
-
 }

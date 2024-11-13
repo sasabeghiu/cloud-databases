@@ -17,5 +17,4 @@ namespace OnlineStore.DTO
         public int Rating { get; set; }
         public DateTime ReviewDate { get; set; }
     }
-
 }

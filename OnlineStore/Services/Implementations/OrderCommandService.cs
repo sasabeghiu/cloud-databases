@@ -30,8 +30,9 @@ namespace OnlineStore.Services.Implementations
                 OrderItems = new List<OrderItem>(),
             };
 
-            // Retrieve each product's price and calculate the total price for the order item
-            foreach (var itemDto in orderDto.OrderItems)
+            decimal totalPrice = 0;
+
+            foreach (var itemDto in orderDto.OrderItems ?? new List<OrderItemDto>())
             {
                 var product = await _context.Products.FirstOrDefaultAsync(p =>
                     p.ProductId == itemDto.ProductId
@@ -44,7 +45,6 @@ namespace OnlineStore.Services.Implementations
                     );
                 }
 
-                // Calculate price based on product price and quantity
                 var orderItem = new OrderItem
                 {
                     ProductId = itemDto.ProductId,
@@ -52,8 +52,11 @@ namespace OnlineStore.Services.Implementations
                     Price = product.Price * itemDto.Quantity,
                 };
 
+                totalPrice += orderItem.Price;
                 order.OrderItems.Add(orderItem);
             }
+
+            order.TotalPrice = totalPrice;
 
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();

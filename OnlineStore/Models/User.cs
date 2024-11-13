@@ -30,6 +30,6 @@ namespace OnlineStore.Models
     public enum UserRole
     {
         Admin,
-        Customer
+        Customer,
     }
 }

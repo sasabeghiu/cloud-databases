@@ -17,7 +17,9 @@ namespace OnlineStore.Services.Implementations
 
         public async Task<UserDto> GetUserByIdAsync(int userId)
         {
-            var user = await _context.Users.FindAsync(userId) ?? throw new KeyNotFoundException($"User with ID {userId} not found.");
+            var user =
+                await _context.Users.FindAsync(userId)
+                ?? throw new KeyNotFoundException($"User with ID {userId} not found.");
 
             return new UserDto
             {
@@ -25,13 +27,15 @@ namespace OnlineStore.Services.Implementations
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Email = user.Email,
-                Role = user.Role
+                Role = user.Role,
             };
         }
 
         public async Task<UserDto> GetUserByEmailAsync(string email)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email) ?? throw new KeyNotFoundException($"User with email {email} not found.");
+            var user =
+                await _context.Users.FirstOrDefaultAsync(u => u.Email == email)
+                ?? throw new KeyNotFoundException($"User with email {email} not found.");
 
             return new UserDto
             {
@@ -39,7 +43,7 @@ namespace OnlineStore.Services.Implementations
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Email = user.Email,
-                Role = user.Role
+                Role = user.Role,
             };
         }
 
@@ -51,7 +55,7 @@ namespace OnlineStore.Services.Implementations
                 LastName = userDto.LastName,
                 Email = userDto.Email,
                 Password = userDto.Password, // Consider hashing the password
-                Role = UserRole.Customer
+                Role = UserRole.Customer,
             };
 
             _context.Users.Add(user);

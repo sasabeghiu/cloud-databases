@@ -14,6 +14,7 @@ namespace OnlineStore.Models
         public DateTime? ShippingDate { get; set; }
         public OrderStatus Status { get; set; }
         public string? ProcessedDuration { get; set; }
+        public decimal TotalPrice { get; set; }
         public List<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
     }
 
@@ -22,6 +23,6 @@ namespace OnlineStore.Models
         Ordered,
         Shipped,
         Delivered,
-        Canceled
+        Canceled,
     }
 }
