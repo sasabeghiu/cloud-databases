@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using OnlineStore.Models;
 using OnlineStore.DTO;
+using OnlineStore.Models;
 using OnlineStore.Services.Interfaces;
 
 namespace OnlineStore.Controllers
@@ -11,11 +11,17 @@ namespace OnlineStore.Controllers
     {
         private readonly IOrderCommandService _orderCommandService;
         private readonly IOrderQueryService _orderQueryService;
+        private readonly IProductService _productService;
 
-        public OrdersController(IOrderCommandService orderCommandService, IOrderQueryService orderQueryService)
+        public OrdersController(
+            IOrderCommandService orderCommandService,
+            IOrderQueryService orderQueryService,
+            IProductService productService
+        )
         {
             _orderCommandService = orderCommandService;
             _orderQueryService = orderQueryService;
+            _productService = productService;
         }
 
         public class CreateOrderRequest
@@ -27,13 +33,37 @@ namespace OnlineStore.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateOrder([FromBody] CreateOrderRequest request)
         {
+            foreach (var orderItem in request.OrderItems)
+            {
+                var currentProduct = await _productService.GetProductByIdAsync(orderItem.ProductId);
+                var newStock = currentProduct.Stock - orderItem.Quantity;
+
+                if (newStock < 0)
+                {
+                    return BadRequest(
+                        $"Not enough stock for Product {orderItem.ProductId}. Current stock: {currentProduct.Stock}, Requested: {orderItem.Quantity}"
+                    );
+                }
+            }
+
             var orderDto = new OrderCreateDto
             {
                 UserId = request.UserId,
-                OrderItems = request.OrderItems
+                OrderItems = request.OrderItems,
             };
 
-            await _orderCommandService.CreateOrderAsync(orderDto);
+            var order = await _orderCommandService.CreateOrderAsync(orderDto);
+
+            var httpClient = new HttpClient();
+            var requestUrl = $"http://localhost:7071/api/orders/{order.OrderId}/update-stock"; // Use the actual URL
+            var orderDetails = new OrderCreateDto { OrderItems = orderDto.OrderItems };
+            var response = await httpClient.PostAsJsonAsync(requestUrl, orderDto);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return StatusCode(500);
+            }
+
             return StatusCode(201);
         }
 
@@ -66,7 +96,10 @@ namespace OnlineStore.Controllers
         }
 
         [HttpPut("{id}/ship")]
-        public async Task<IActionResult> UpdateShippingDate(int id, [FromBody] DateTime shippingDate)
+        public async Task<IActionResult> UpdateShippingDate(
+            int id,
+            [FromBody] DateTime shippingDate
+        )
         {
             await _orderCommandService.UpdateShippingDateAsync(id, shippingDate);
             return NoContent();

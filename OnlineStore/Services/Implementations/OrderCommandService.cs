@@ -15,7 +15,7 @@ namespace OnlineStore.Services.Implementations
             _context = context;
         }
 
-        public async Task CreateOrderAsync(OrderCreateDto orderDto)
+        public async Task<Order> CreateOrderAsync(OrderCreateDto orderDto)
         {
             if (orderDto == null)
             {
@@ -27,19 +27,38 @@ namespace OnlineStore.Services.Implementations
                 UserId = orderDto.UserId,
                 OrderDate = DateTime.UtcNow,
                 Status = OrderStatus.Ordered,
-                OrderItems =
-                    orderDto
-                        .OrderItems?.Select(itemDto => new OrderItem
-                        {
-                            ProductId = itemDto.ProductId,
-                            Quantity = itemDto.Quantity,
-                            Price = itemDto.Price,
-                        })
-                        .ToList() ?? new List<OrderItem>(),
+                OrderItems = new List<OrderItem>(),
             };
+
+            // Retrieve each product's price and calculate the total price for the order item
+            foreach (var itemDto in orderDto.OrderItems)
+            {
+                var product = await _context.Products.FirstOrDefaultAsync(p =>
+                    p.ProductId == itemDto.ProductId
+                );
+
+                if (product == null)
+                {
+                    throw new KeyNotFoundException(
+                        $"Product with ID {itemDto.ProductId} not found."
+                    );
+                }
+
+                // Calculate price based on product price and quantity
+                var orderItem = new OrderItem
+                {
+                    ProductId = itemDto.ProductId,
+                    Quantity = itemDto.Quantity,
+                    Price = product.Price * itemDto.Quantity,
+                };
+
+                order.OrderItems.Add(orderItem);
+            }
 
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
+
+            return order;
         }
 
         public async Task UpdateOrderStatusAsync(int orderId, OrderStatus status)

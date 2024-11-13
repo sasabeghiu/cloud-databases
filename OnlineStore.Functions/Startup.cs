@@ -28,6 +28,7 @@ namespace OnlineStore.Functions
 
             builder.Services.AddScoped<IOrderQueryService, OrderQueryService>();
             builder.Services.AddScoped<IOrderCommandService, OrderCommandService>();
+            builder.Services.AddScoped<IProductService, ProductService>();
         }
     }
 }

@@ -36,7 +36,6 @@ namespace OnlineStore.Services.Implementations
                     {
                         ProductId = oi.ProductId,
                         Quantity = oi.Quantity,
-                        Price = oi.Price,
                     })
                     .ToList(),
             };
@@ -62,7 +61,6 @@ namespace OnlineStore.Services.Implementations
                     {
                         ProductId = oi.ProductId,
                         Quantity = oi.Quantity,
-                        Price = oi.Price,
                     })
                     .ToList(),
             });
@@ -88,7 +86,6 @@ namespace OnlineStore.Services.Implementations
                     {
                         ProductId = oi.ProductId,
                         Quantity = oi.Quantity,
-                        Price = oi.Price,
                     })
                     .ToList(),
             });
@@ -115,7 +112,6 @@ namespace OnlineStore.Services.Implementations
                     {
                         ProductId = oi.ProductId,
                         Quantity = oi.Quantity,
-                        Price = oi.Price,
                     })
                     .ToList(),
             });
@@ -140,7 +136,6 @@ namespace OnlineStore.Services.Implementations
                     {
                         ProductId = oi.ProductId,
                         Quantity = oi.Quantity,
-                        Price = oi.Price,
                     })
                     .ToList(),
             });
