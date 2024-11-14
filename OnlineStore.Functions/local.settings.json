@@ -1,8 +1,8 @@
 {
   "IsEncrypted": false,
   "Values": {
-    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "AzureWebJobsStorage": "DefaultEndpointsProtocol=https;AccountName=cdbstorageacc;AccountKey=f6k1aZAxEaPct5ha0H/GVRsNYHjX7fFOx3laScxyRtHSlQfB+X8yDx0lrM940aOsVmmKFCoTpk63+ASteld5qw==;EndpointSuffix=core.windows.net",
     "FUNCTIONS_WORKER_RUNTIME": "dotnet",
-    "SqlConnectionString": "Server=localhost\\SQLEXPRESS;Database=OnlineStore;Trusted_Connection=True;MultipleActiveResultSets=true"
+    "SqlConnectionString": "Server=tcp:clouddbs.database.windows.net,1433;Initial Catalog=OnlineStore;Persist Security Info=False;User ID=s646415;Password=cloudDB2024;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
   }
 }

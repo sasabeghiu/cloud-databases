@@ -43,9 +43,7 @@ namespace OnlineStore.Services.Implementations
                 ProductId = product.ProductId,
                 Name = product.Name,
                 Description = product.Description,
-                Image =
-                    product.Image
-                    + "?sv=2018-03-28&st=2024-11-11T18%3A44%3A18Z&se=2024-11-12T18%3A44%3A18Z&sr=c&sp=rl&sig=%2FwNGlXDaIcwjjQgIpN4dm%2BxlqH6sFOhMkxFX8LF4xqU%3D",
+                Image = product.Image,
                 Price = product.Price,
                 Stock = product.Stock,
             });

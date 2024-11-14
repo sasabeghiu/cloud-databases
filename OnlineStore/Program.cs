@@ -14,7 +14,7 @@ builder.Services.AddSwaggerGen();
 // Add Database Context for SQL Server
 builder.Services.AddDbContext<OnlineStoreContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("AzureSqlDatabase"));
 });
 
 // Register Cosmos Client and CosmosDbContext for Orders and Reviews in Cosmos DB
