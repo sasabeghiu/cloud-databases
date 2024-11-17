@@ -26,10 +26,10 @@ The Online Store Backend is a proof-of-concept project designed to showcase a sc
 
 1. UpdateOrderProcessedDuration
    - Trigger: Time-based or event-driven (order update).
-   - Purpose: Calculates and updates `orderProcessed` metrics.
+   - Purpose: Calculates and updates `orderProcessed` metrics every day at 12:00 am.
 2. UpdateProductStockOnOrder
    - Trigger: Event-driven (order placement).
-   - Purpose: Updates product inventory when an order is placed.
+   - Purpose: Updates product inventory as soon as an order is placed.
 
 ## Local Setup
 
