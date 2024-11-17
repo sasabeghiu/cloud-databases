@@ -41,8 +41,7 @@ namespace OnlineStore.Functions
                 $"HTTP trigger to update product stock triggered for OrderId: {orderId}"
             );
 
-            // Fetch the order based on OrderId
-            var order = await _orderQueryService.GetOrderByIdAsync(orderId); // Assuming a method to get order by Id
+            var order = await _orderQueryService.GetOrderByIdAsync(orderId); 
 
             if (order == null || order.OrderItems == null)
             {
@@ -50,15 +49,12 @@ namespace OnlineStore.Functions
                 return;
             }
 
-            // Loop through each order item
             foreach (var orderItem in order.OrderItems)
             {
-                // Get the current stock for the product
                 var currentProduct = await _productService.GetProductByIdAsync(orderItem.ProductId);
 
                 if (currentProduct != null)
                 {
-                    // Update the stock by deducting the quantity ordered
                     var newStock = currentProduct.Stock - orderItem.Quantity;
                     if (newStock < 0)
                     {
@@ -68,7 +64,6 @@ namespace OnlineStore.Functions
                         continue;
                     }
 
-                    // Update product stock
                     await _productService.UpdateProductStockAsync(orderItem.ProductId, newStock);
                     log.LogInformation(
                         $"Updated stock for Product {orderItem.ProductId}. New stock: {newStock}"

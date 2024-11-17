@@ -54,7 +54,7 @@ namespace OnlineStore.Services.Implementations
                 FirstName = userDto.FirstName,
                 LastName = userDto.LastName,
                 Email = userDto.Email,
-                Password = userDto.Password, // Consider hashing the password
+                Password = userDto.Password, // to do: hash password
                 Role = UserRole.Customer,
             };
 

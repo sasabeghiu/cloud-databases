@@ -55,7 +55,8 @@ namespace OnlineStore.Controllers
             var order = await _orderCommandService.CreateOrderAsync(orderDto);
 
             var httpClient = new HttpClient();
-            var requestUrl = $"https://updateorderprocessedduration.azurewebsites.net/api/orders/{order.OrderId}/update-stock?code=Ofyl3QtgwFoax5ZipDbaIO8Ax5xFIJ9DgHv4z7Ql4YYvAzFuRi0uyg%3D%3D"; // Use the actual URL
+            var requestUrl =
+                $"https://updateorderprocessedduration.azurewebsites.net/api/orders/{order.OrderId}/update-stock?code=Ofyl3QtgwFoax5ZipDbaIO8Ax5xFIJ9DgHv4z7Ql4YYvAzFuRi0uyg%3D%3D"; // Use the actual URL
             var orderDetails = new OrderCreateDto { OrderItems = orderDto.OrderItems };
             var response = await httpClient.PostAsJsonAsync(requestUrl, orderDto);
 

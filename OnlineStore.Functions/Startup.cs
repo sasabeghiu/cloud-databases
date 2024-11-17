@@ -15,13 +15,11 @@ namespace OnlineStore.Functions
     {
         public override void Configure(IFunctionsHostBuilder builder)
         {
-            // Access the configuration, specifically for local development
             var configuration = builder.GetContext().Configuration;
             var connectionString =
                 configuration.GetConnectionString("SqlConnectionString")
                 ?? Environment.GetEnvironmentVariable("SqlConnectionString");
 
-            // Register services here
             builder.Services.AddDbContext<OnlineStoreContext>(options =>
                 options.UseSqlServer(connectionString)
             );

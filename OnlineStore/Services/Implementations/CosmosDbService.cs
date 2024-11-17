@@ -1,5 +1,4 @@
 using Microsoft.Azure.Cosmos;
-using OnlineStore.Models;
 using OnlineStore.Services.Interfaces;
 
 namespace OnlineStore.Services.Implementations

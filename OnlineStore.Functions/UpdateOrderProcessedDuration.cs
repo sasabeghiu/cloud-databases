@@ -27,7 +27,6 @@ namespace OnlineStore.Functions
                 $"UpdateOrderProcessedDuration function executed at: {DateTime.Now}"
             );
 
-            // Retrieve orders that need processing
             var pendingOrders = await _orderQueryService.GetPendingOrdersAsync();
             foreach (var order in pendingOrders)
             {
@@ -35,10 +34,8 @@ namespace OnlineStore.Functions
                 {
                     var processedDuration = order.ShippingDate.Value - order.OrderDate;
 
-                    // Format the duration to human-readable format
                     var formattedDuration = FormatProcessedDuration(processedDuration);
 
-                    // Save it to the database
                     await _orderCommandService.UpdateOrderProcessedDurationAsync(
                         order.OrderId,
                         formattedDuration
